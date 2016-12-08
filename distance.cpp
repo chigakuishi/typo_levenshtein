@@ -3,6 +3,7 @@
 #include<utility>
 #include<vector>
 #include<algorithm>
+#include<map>
 
 struct DIST{
   public:
@@ -41,8 +42,12 @@ std::pair<double,int> min3(double n0,double n1,double n2){ //{{{
 
   return ret;
 } //}}}
-
-DIST lev_normal(std::string strf, std::string strt){
+std::pair<char,char> spair(char c1,char c2){
+  return c1 < c2?
+    std::pair<char,char>(c1,c2):
+    std::pair<char,char>(c2,c1);
+}
+DIST lev_map(std::string strf, std::string strt, std::map< std::pair<char, char>, double > distlist){
   DIST ret;
   const unsigned int flen = strf.length();
   const unsigned int tlen = strt.length();
@@ -62,13 +67,17 @@ DIST lev_normal(std::string strf, std::string strt){
   //TODO : multi route
   for(int i=1;i<=flen;i++){
     for(int ii=1;ii<=tlen;ii++){
+      double rcost=1;
       if(strf[i-1] == strt[ii-1]){
         dp[i][ii] = dp[i-1][ii-1];
         memo[i][ii] = MAT;
         continue;
       }
+      if(distlist[spair(strf[i-1], strt[ii-1])]){
+        rcost=distlist[spair(strf[i-1], strt[ii-1])];
+      }
       std::pair<double,int> min = min3(
-        dp[i-1][ii-1] + 1,  //REP
+        dp[i-1][ii-1] + rcost,  //REP
         dp[i][ii-1] + 1,    //INS
         dp[i-1][ii] + 1     //DEL
       );
@@ -109,6 +118,10 @@ DIST lev_normal(std::string strf, std::string strt){
   ret.dist = dp[flen][tlen];
 
   return ret;
+}
+
+DIST lev_normal(std::string strf, std::string strt){
+  return lev_map(strf,strt,std::map< std::pair<char,char>, double >());
 }
 
 int main(){
