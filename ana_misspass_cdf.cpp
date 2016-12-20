@@ -12,7 +12,9 @@ char ntos(char c){
 
 int main(){
   int n;
-  std::map< std::pair<char,char>, int > count;
+  int all=0;
+  int now=0;
+  std::map<double,int> cou;
   std::cin>>n;
   std::cin.get();
   for(int i=0;i<n;i++){
@@ -20,14 +22,14 @@ int main(){
     getline(std::cin,strf);
     getline(std::cin,strt);
     DIST dist = lev_normal(strf,strt);
-    for(auto it=dist.route.begin() ; it!=dist.route.end() ; it++){
-      if(it->first && it->second){
-        count[spair(*it)]++;
-      }
+    if(dist.dist){
+      all++;
+      cou[dist.dist/strf.length()]++;
     }
   }
-  for(auto it=count.begin() ; it!=count.end() ; it++){
-    std::cout<< it->first.first << " " << it->first.second << " " << it->second << std::endl;
+  for(auto it=cou.begin();it!=cou.end();it++){
+    now+=it->second;
+    std::cout<< it->first << " " << (double)now/all <<std::endl;
   }
   return 0;
 }

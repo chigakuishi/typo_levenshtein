@@ -23,7 +23,7 @@ OUT: while(<STDIN>){
     }
     unless($origin eq $type->{"typed"}){
       $cou++;
-      $out .= encode("UTF-8",($origin." ".$type->{"typed"}."\n"));
+      $out .= encode("UTF-8",($origin."\n".$type->{"typed"}."\n"));
     }
   }
 }
