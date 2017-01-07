@@ -1,3 +1,10 @@
+#include<iostream>
+#include<string>
+#include<utility>
+#include<vector>
+#include<algorithm>
+#include<map>
+#include<cstdio>
 struct DIST{
   public:
     double dist;
@@ -43,6 +50,20 @@ std::pair<char,char> spair(char c1,char c2){
 std::pair<char,char> spair(std::pair<char,char> cp){
   return spair(cp.first,cp.second);
 }
+std::map< std::pair<char, char>, double > ssvtomap(std::string fname){
+  FILE *fp;
+  char a,b;
+  double d;
+  std::map< std::pair<char, char>, double > ret;
+  fp=fopen(fname.c_str(),"r");
+  while(fscanf(fp,"%c %c %lf",&a,&b,&d) != EOF){
+    ret[std::pair<char,char>(a,b)]=d;
+  }
+  fclose(fp);
+  return ret;
+}
+
+
 DIST lev_map(std::string strf, std::string strt, std::map< std::pair<char, char>, double > distlist){
   DIST ret;
   const unsigned int flen = strf.length();

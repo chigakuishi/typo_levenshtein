@@ -1,7 +1,7 @@
 set terminal svg
 set output '/var/www/html/share/miss_count_cdf.svg'
 set multiplot
-set logscale
+#set logscale
 set xlabel 'leveshtein / length'
 set ylabel 'cdf'
 set xrange [  : 30 ]
@@ -13,7 +13,5 @@ plot 'tmp' w lp
 
 set parametric
 set trang[0:1]
-const = 0.1
-plot const,t with lines
 
 exit
