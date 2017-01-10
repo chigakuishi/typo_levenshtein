@@ -56,8 +56,8 @@ std::map< std::pair<char, char>, double > ssvtomap(std::string fname){
   double d;
   std::map< std::pair<char, char>, double > ret;
   fp=fopen(fname.c_str(),"r");
-  while(fscanf(fp,"%c %c %lf",&a,&b,&d) != EOF){
-    ret[std::pair<char,char>(a,b)]=d;
+  while(fscanf(fp,"%c %c %lf\n",&a,&b,&d) != EOF){
+    ret[spair(a,b)]=d;
   }
   fclose(fp);
   return ret;
