@@ -17,7 +17,8 @@ enum method{
   DEL, //Delete
   INS, //Insert
   MAT, //Match
-  REP  //Replace
+  REP, //Replace
+  CNG  //Change
 };
 
 std::pair<double,int> min3(double n0,double n1,double n2){ //{{{
@@ -64,7 +65,7 @@ std::map< std::pair<char, char>, double > ssvtomap(std::string fname){
 }
 
 
-DIST lev_map(std::string strf, std::string strt, std::map< std::pair<char, char>, double > distlist){
+DIST lev_map(std::string strf, std::string strt, std::map< std::pair<char, char>, double > distlist,double cngcost=2){
   DIST ret;
   const unsigned int flen = strf.length();
   const unsigned int tlen = strt.length();
@@ -85,30 +86,32 @@ DIST lev_map(std::string strf, std::string strt, std::map< std::pair<char, char>
   for(int i=1;i<=flen;i++){
     for(int ii=1;ii<=tlen;ii++){
       double rcost=1;
-      if(strf[i-1] == strt[ii-1]){
-        dp[i][ii] = dp[i-1][ii-1];
-        memo[i][ii] = MAT;
-        continue;
-      }
+      bool cancng=false;
       if(distlist[spair(strf[i-1], strt[ii-1])]){
         rcost=distlist[spair(strf[i-1], strt[ii-1])];
       }
-      std::pair<double,int> min = min3(
-        dp[i-1][ii-1] + rcost,  //REP
-        dp[i][ii-1] + 1,    //INS
-        dp[i-1][ii] + 1     //DEL
-      );
-      dp[i][ii] = min.first;
-      switch(min.second){
-        case 0:
-          memo[i][ii] = REP;
-        break;
-        case 1:
-          memo[i][ii] = INS;
-        break;
-        case 2:
-          memo[i][ii] = DEL;
-        break;
+      if(strf[i-1] == strt[ii-1]){
+        rcost=0;
+      }
+      if(i>=2 && ii>=2 && strf[i-1] == strt[ii-2] && strf[i-2] == strt[ii-1]){
+        cancng=true;
+      }
+      
+      {
+        dp[i][ii] = dp[i-1][ii-1]+rcost;
+        memo[i][ii] = rcost ?REP :MAT;
+      }
+      if(dp[i][ii] > dp[i][ii-1]+1){
+        dp[i][ii] = dp[i][ii-1]+1;
+        memo[i][ii] = INS;
+      }
+      if(dp[i][ii] > dp[i-1][ii]+1){
+        dp[i][ii] = dp[i-1][ii]+1;
+        memo[i][ii] = DEL;
+      }
+      if(cancng && dp[i][ii] > dp[i-2][ii-2]+cngcost){
+        dp[i][ii] = dp[i-2][ii-2]+cngcost;
+        memo[i][ii] = CNG;
       }
     }
   }
@@ -122,6 +125,13 @@ DIST lev_map(std::string strf, std::string strt, std::map< std::pair<char, char>
       ret.route.push_back( std::pair<char,char>('\0',strt[pt-1]) );
       pt--;
     }else if(memo[pf][pt]==REP){
+      ret.route.push_back( std::pair<char,char>(strf[pf-1], strt[pt-1]) );
+      pf--;
+      pt--;
+    }else if(memo[pf][pt]==CNG){
+      ret.route.push_back( std::pair<char,char>(strf[pf-1], strt[pt-1]) );
+      pf--;
+      pt--;
       ret.route.push_back( std::pair<char,char>(strf[pf-1], strt[pt-1]) );
       pf--;
       pt--;

@@ -1,10 +1,10 @@
 set terminal svg
-set output '/var/www/html/share/miss_count_cdf.svg'
+set output '/var/www/html/share/miss_count_cdf_log.svg'
 set multiplot
-#set logscale
+set logscale
 set xlabel 'leveshtein / length'
 set ylabel 'cdf'
-set xrange [0.001 : 2 ]
+set xrange [0.001 : 30 ]
 set yrange [  : 1 ]
 unset key
 set grid
