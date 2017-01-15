@@ -22,7 +22,7 @@ int main(){
     std::string strf,strt;
     getline(std::cin,strf);
     getline(std::cin,strt);
-    DIST dist = lev_map(strf,strt,dists);
+    DIST dist = lev_map(strf,strt,dists,0.1);
     if(dist.dist){
       all++;
       cou[dist.dist/strf.length()]++;

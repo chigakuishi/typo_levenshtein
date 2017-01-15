@@ -18,6 +18,7 @@ int main(int argc,char* argv[]){
   std::map< std::pair<std::string,std::string>, bool > his;
   std::string output="";
   int cou=0;
+  auto dists=ssvtomap("dist.ssv");
   if(argc==2){
     bdr=atof(argv[1]);
   }
@@ -28,7 +29,8 @@ int main(int argc,char* argv[]){
     std::string strf,strt;
     getline(std::cin,strf);
     getline(std::cin,strt);
-    DIST dist = lev_normal(strf,strt);
+    DIST dist = lev_map(strf,strt,dists,0.1);
+    DIST distn = lev_normal(strf,strt);
     if(dist.dist/strf.length() > bdr || bdr==0){
       /*
       for(auto it=dist.route.begin() ; it!=dist.route.end() ; it++){
@@ -37,17 +39,19 @@ int main(int argc,char* argv[]){
         }
       }
       */
-      std::cerr<<strf<<" "<<strt<<" "<<dist.dist/strf.length()<<std::endl;
+      std::cout<<strf<<"\n"<<strt<<"\n"<<dist.dist/strf.length()<<" "<<distn.dist/strf.length()<<"\n---"<<std::endl;
     }else if(! his.count(std::pair<std::string,std::string>(strf,strt))){
+      /*
       cou++;
       output+=strf;
       output+="\n";
       output+=strt;
       output+="\n";
       his[std::pair<std::string,std::string>(strf,strt)]=true;
+      */
     }
   }
-  std::cout<<cou<<"\n"<<output<<std::flush;
+  //std::cout<<cou<<"\n"<<output<<std::flush;
   for(auto it=count.begin() ; it!=count.end() ; it++){
     //std::cout<< it->first.first << " " << it->first.second << " " << it->second << std::endl;
   }
